@@ -1,0 +1,7 @@
+{% extends "index.html" %} {% block list %}
+<ul>
+  {% for item in items %}
+  <li>{{item.item_number}}</li>
+  {% endfor %}
+</ul>
+{% endblock list %}
