@@ -2,7 +2,8 @@ version: "3.9"
 services:
   django_app:
     build: ./app
-    command: python manage.py runserver 0.0.0.0:8000
+    # command: python manage.py migrate --noinput
+    # command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./app/:/usr/src/app/
     ports:
@@ -11,17 +12,18 @@ services:
       - ./app/.env
     depends_on:
       - pg
-  # nginx:
-  #   build: ./nginx
-  #   volumes:
-  #     - static:/static
-  #   ports:
-  #     - 80:80
-  #   depends_on:
-  #     - django_app
+  nginx:
+    build: ./nginx
+    volumes:
+      - ./app:/usr/src/app/
+      # - static:/static
+    ports:
+      - 80:80
+    depends_on:
+      - django_app
   pg:
     container_name: pg_django
-    image: postgres
+    image: postgres:14.3-alpine
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -37,7 +39,7 @@ services:
       - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
   pgadmin:
     container_name: pgadmin_container
-    image: dpage/pgadmin4
+    image: dpage/pgadmin4:6.9
     restart: always
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
