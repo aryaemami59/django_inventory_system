@@ -1,21 +1,52 @@
-version: "3.8"
+version: "3.9"
 services:
   django_app:
+    build: ./app
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - static:/static
-    env_file:
-      - .env
-    build:
-      context: .
+      - ./app/:/usr/src/app/
+      # - static:/static
     ports:
       - 8000:8000
-  nginx:
-    build: ./nginx
-    volumes:
-      - static:/static
-    ports:
-      - 80:80
+    env_file:
+      - ./app/.env
     depends_on:
-      - django_app
+      - pg
+  # nginx:
+  #   build: ./nginx
+  #   volumes:
+  #     - static:/static
+  #   ports:
+  #     - 80:80
+  #   depends_on:
+  #     - django_app
+  pg:
+    container_name: pg_django
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: items_db
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data:/data
+      - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
+  pgadmin:
+    container_name: pgadmin_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_LISTEN_PORT: 5433
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+    ports:
+      - "5433:5433"
+    depends_on:
+      - pg
 volumes:
   static:
