@@ -1,6 +1,7 @@
 version: "3.9"
 services:
   django_app:
+    container_name: django_app_container
     build: ./app
     # command: python manage.py migrate --noinput
     # command: python manage.py runserver 0.0.0.0:8000
@@ -34,7 +35,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - django_data:/var/lib/postgresql/data/inventory/
+      # uncomment line below for persisting postgres data after removing images.
+      # - django_data:/var/lib/postgresql/data/inventory/
       - ./data:/data
       - ./data/misc/django_init.sql:/docker-entrypoint-initdb.d/1-django-init.sql
   pgadmin:
@@ -51,5 +53,6 @@ services:
       - "5433:5433"
     depends_on:
       - pg
-volumes:
-  django_data: {}
+# uncomment line below for persisting postgres data after removing images.
+# volumes:
+#   django_data: {}
