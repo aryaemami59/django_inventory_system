@@ -1,5 +1,5 @@
-DROP DATABASE IF EXISTS items_db;
-CREATE DATABASE items_db;
+-- DROP DATABASE IF EXISTS items_db;
+-- CREATE DATABASE items_db;
 
 \c items_db
 
