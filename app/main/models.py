@@ -4,7 +4,7 @@ from django.db import models
 
 class Item(models.Model):
     item_number = models.CharField(
-        max_length=12, blank=True, null=False, unique=True)
+        max_length=11, blank=True, null=False, unique=True)
     item_name = models.CharField(max_length=200)
     item_count = models.IntegerField(default=0)
 
